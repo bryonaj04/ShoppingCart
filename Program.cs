@@ -20,13 +20,13 @@ namespace ShoppingCart
                 ctr++;
                 item = Console.ReadLine();
                 if (!string.IsNullOrEmpty(item))
-                    { 
-                itemsToBuy.Add(item);
-            }
+                {
+                    itemsToBuy.Add(item);
+                }
             } while (!string.IsNullOrEmpty(item));
 
             var cartCalculator = new CartCalculator();
-        var calculateResponse = cartCalculator.Calculate(itemsToBuy);
+            var calculateResponse = cartCalculator.Calculate(itemsToBuy);
 
             if (calculateResponse.ErrorMessage != null)
             {
