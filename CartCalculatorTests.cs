@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using ShoppingCart;
-using System;
 using System.Collections.Generic;
 
 namespace ShoppingCartTest
@@ -26,17 +25,17 @@ namespace ShoppingCartTest
         [Test]
         public void IncorrectItemsAddedToCart()
         {
-            var emptyCart = new List<string>() {"Pears","Melons"};
-            var result = testCalculator.Calculate(emptyCart);
+            var cart = new List<string>() {"Pears","Melons"};
+            var result = testCalculator.Calculate(cart);
             Assert.That(result.TotalFruitPrice, Is.EqualTo(0));
-            Assert.That(result.ErrorMessage, Is.EqualTo("You have selected Pears. You can only purchase oranges and apples from Andy's Fruit Cart"));
+            Assert.That(result.ErrorMessage, Is.EqualTo("You can only purchase oranges and apples from Andy's Fruit Cart"));
         }
 
         [Test]
         public void CorrectCalculationForAnOrangeAndAnApple()
         {
-            var emptyCart = new List<string>() { "Oranges", "Apples" };
-            var result = testCalculator.Calculate(emptyCart);
+            var cart = new List<string>() { "Oranges", "Apples" };
+            var result = testCalculator.Calculate(cart);
             Assert.That(result.TotalFruitPrice, Is.EqualTo(0.85));
             Assert.That(result.ErrorMessage, Is.EqualTo(string.Empty));
         }
@@ -44,19 +43,74 @@ namespace ShoppingCartTest
         [Test]
         public void CorrectCalculationForMultipleApplesAndOranges()
         {
-            var emptyCart = new List<string>() { "Apples", "Apples", "Oranges", "Apples"};
-            var result = testCalculator.Calculate(emptyCart);
-            Assert.That(result.TotalFruitPrice, Is.EqualTo(2.05));
+            var cart = new List<string>() { "Apples", "Apples", "Oranges", "Apples"};
+            var result = testCalculator.Calculate(cart);
+            Assert.That(result.TotalFruitPrice, Is.EqualTo(1.45));
             Assert.That(result.ErrorMessage, Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void CorrectCalculationForApplesAndOrangesAndRogueFruit()
         {
-            var emptyCart = new List<string>() { "Apples", "Apples", "Oranges", "Melons"};
-            var result = testCalculator.Calculate(emptyCart);
-            Assert.That(result.TotalFruitPrice, Is.EqualTo(1.45));
-            Assert.That(result.ErrorMessage, Is.EqualTo("You have selected Melons. You can only purchase oranges and apples from Andy's Fruit Cart"));
+            var cart = new List<string>() { "Apples", "Apples", "Oranges", "Melons"};
+            var result = testCalculator.Calculate(cart);
+            Assert.That(result.TotalFruitPrice, Is.EqualTo(0.85));
+            Assert.That(result.ErrorMessage, Is.EqualTo("You have tried to purchase Melons. You can only purchase oranges and apples from Andy's Fruit Cart"));
         }
+
+        [Test]
+        public void CorrectCalculationForApplesWithTwoForOneDiscount()
+        {
+            var cart = new List<string>() { "Apples", "Apples"};
+            var result = testCalculator.Calculate(cart);
+            Assert.That(result.TotalFruitPrice, Is.EqualTo(.60));
+            Assert.That(result.ErrorMessage, Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void CorrectCalculationForOrangesWithThreeForTwoDiscount()
+        {
+            var cart = new List<string>() { "Oranges", "Oranges", "Oranges" };
+            var result = testCalculator.Calculate(cart);
+            Assert.That(result.TotalFruitPrice, Is.EqualTo(.50));
+            Assert.That(result.ErrorMessage, Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void CorrectCalculationForOrangesAndApplesDiscount()
+        {
+            var cart = new List<string>() { "Oranges", "Oranges", "Oranges", "Apples", "Apples" };
+            var result = testCalculator.Calculate(cart);
+            Assert.That(result.TotalFruitPrice, Is.EqualTo(1.10));
+            Assert.That(result.ErrorMessage, Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void CorrectCalculationForFourOranges()
+        {
+            var cart = new List<string>() { "Oranges", "Oranges", "Oranges", "Oranges" };
+            var result = testCalculator.Calculate(cart);
+            Assert.That(result.TotalFruitPrice, Is.EqualTo(.75));
+            Assert.That(result.ErrorMessage, Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void CorrectCalculationForFiveOranges()
+        {
+            var cart = new List<string>() { "Oranges", "Oranges", "Oranges", "Oranges", "Oranges" };
+            var result = testCalculator.Calculate(cart);
+            Assert.That(result.TotalFruitPrice, Is.EqualTo(1.00));
+            Assert.That(result.ErrorMessage, Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void CorrectCalculationForSixOranges()
+        {
+            var cart = new List<string>() { "Oranges", "Oranges", "Oranges", "Oranges", "Oranges", "Oranges"};
+            var result = testCalculator.Calculate(cart);
+            Assert.That(result.TotalFruitPrice, Is.EqualTo(1.00));
+            Assert.That(result.ErrorMessage, Is.EqualTo(string.Empty));
+        }
+
     }
 }

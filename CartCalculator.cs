@@ -14,6 +14,9 @@ namespace ShoppingCart
 
         private readonly List<string> AllowedFruits = new List<string> { "oranges", "apples" };
 
+        int orangeCounter = 0;
+        int appleCounter = 0;
+
         public CartCalculateRespnse Calculate(List<string> ListOfFruits)
         {
             var response = new CartCalculateRespnse()
@@ -34,32 +37,56 @@ namespace ShoppingCart
 
             foreach (var fruit in ListOfFruits)
             {
-                if (AllowedFruits.Contains(fruit.ToLower()) && fruit.ToLower() == Oranges)
+                if (AllowedFruits.Contains(fruit.ToLower()))
                 {
-                    listOfFruitPrices.Add(CostOfOrange);
+                    if (fruit.ToLower() == Oranges)
+                    {
+                        listOfFruitPrices.Add(CostOfOrange);
+                        orangeCounter++;
+                    }
+
+                    else if (fruit.ToLower() == Apples)
+                    {
+                        listOfFruitPrices.Add(CostOfApple);
+                        appleCounter++;
+                    }
 
                 }
-
-                else if (AllowedFruits.Contains(fruit.ToLower()) && fruit.ToLower() == Apples)
-
-                {
-
-                    listOfFruitPrices.Add(CostOfApple);
-                }
-
                 else
                 {
-                    response.ErrorMessage = $"You have selected {fruit}. You can only purchase {string.Join(" and ", AllowedFruits)} from Andy's Fruit Cart";
-                    response.TotalFruitPrice = listOfFruitPrices.Sum();
-                    Console.WriteLine(response.ErrorMessage);
-                    return response;
+                    response.ErrorMessage = $"You have tried to purchase {fruit}. You can only purchase {string.Join(" and ", AllowedFruits)} from Andy's Fruit Cart";
+                }
+            }
 
+            response.TotalFruitPrice = listOfFruitPrices.Sum();
+            var cartDiscountResponse = new CartDiscountCalculator();
+
+            if (appleCounter == 0 && orangeCounter == 0)
+            {
+                response.ErrorMessage = $"You can only purchase {string.Join(" and ", AllowedFruits)} from Andy's Fruit Cart";
+                return response;
+            }
+
+            if (appleCounter >= 2)
+            {
+                if ((appleCounter % 2 == 0 && appleCounter != 0) || ((appleCounter - 1) % 2 == 0 && appleCounter != 0))
+                {
+                    var costOfApplesWithDiscount = cartDiscountResponse.CalculateDiscountManager(Apples, CostOfApple, appleCounter);
+                    response.TotalFruitPrice = listOfFruitPrices.Sum() - costOfApplesWithDiscount;
                 }
 
             }
-            response.TotalFruitPrice = listOfFruitPrices.Sum();
+
+            if (orangeCounter >= 3)
+            {
+                if ((orangeCounter % 3 == 0 && orangeCounter != 0) || ((orangeCounter - 1) % 3 == 0 && orangeCounter != 0) || ((orangeCounter - 2) % 3 == 0 && orangeCounter != 0))
+                {
+                    var costOfOrangesWithDiscount = cartDiscountResponse.CalculateDiscountManager(Oranges, CostOfOrange, orangeCounter);
+                    response.TotalFruitPrice -= costOfOrangesWithDiscount;
+                }
+            }
+
             return response;
         }
-
     }
 }
