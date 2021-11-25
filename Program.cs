@@ -30,11 +30,12 @@ namespace ShoppingCart
 
             if (calculateResponse.ErrorMessage != null)
             {
-                Console.WriteLine($"Your total is {calculateResponse.TotalFruitPrice.ToString("C", CultureInfo.CurrentCulture)}");
+                Console.WriteLine(calculateResponse.ErrorMessage);
+                
             }
             else
             {
-                Console.WriteLine(calculateResponse.ErrorMessage);
+                Console.WriteLine($"Your total is {calculateResponse.TotalFruitPrice.ToString("C", CultureInfo.CurrentCulture)}");
             }
         }
     }
